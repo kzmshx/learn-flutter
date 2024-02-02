@@ -46,6 +46,7 @@ class MyHomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             WordCard(pair: pair),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 appState.getNext();
