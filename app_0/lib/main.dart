@@ -43,6 +43,11 @@ class MyAppState extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void removeLike(WordPair pair) {
+    likes.remove(pair);
+    notifyListeners();
+  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -57,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     Widget page = switch (selectedIndex) {
       0 => GeneratorPage(),
-      1 => Placeholder(),
+      1 => LikesPage(),
       _ => throw UnimplementedError('no widget for $selectedIndex'),
     };
 
@@ -135,6 +140,47 @@ class GeneratorPage extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class LikesPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+    var likes = appState.likes;
+
+    if (likes.isEmpty) {
+      return Center(
+        child: Text(
+          'No likes yet!',
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+      );
+    }
+
+    return LayoutBuilder(builder: (context, constraints) {
+      return ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Text(
+              'Your Likes',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ),
+          for (var pair in likes)
+            ListTile(
+                leading: Icon(Icons.favorite),
+                title: Text(pair.asLowerCase),
+                trailing: ElevatedButton(
+                  onPressed: () {
+                    appState.removeLike(pair);
+                  },
+                  child: Icon(Icons.delete),
+                )),
+        ],
+      );
+    });
   }
 }
 
