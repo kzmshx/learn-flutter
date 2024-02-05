@@ -61,38 +61,40 @@ class _MyHomePageState extends State<MyHomePage> {
       _ => throw UnimplementedError('no widget for $selectedIndex'),
     };
 
-    return Scaffold(
-      body: Row(
-        children: [
-          SafeArea(
-              child: NavigationRail(
-            extended: false,
-            destinations: [
-              NavigationRailDestination(
-                icon: Icon(Icons.home),
-                label: Text('Home'),
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
+        body: Row(
+          children: [
+            SafeArea(
+                child: NavigationRail(
+              extended: constraints.maxWidth > 600,
+              destinations: [
+                NavigationRailDestination(
+                  icon: Icon(Icons.home),
+                  label: Text('Home'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.favorite),
+                  label: Text('Favorites'),
+                )
+              ],
+              selectedIndex: selectedIndex,
+              onDestinationSelected: (value) {
+                setState(() {
+                  selectedIndex = value;
+                });
+              },
+            )),
+            Expanded(
+              child: Container(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                child: page,
               ),
-              NavigationRailDestination(
-                icon: Icon(Icons.favorite),
-                label: Text('Favorites'),
-              )
-            ],
-            selectedIndex: selectedIndex,
-            onDestinationSelected: (value) {
-              setState(() {
-                selectedIndex = value;
-              });
-            },
-          )),
-          Expanded(
-            child: Container(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              child: page,
-            ),
-          )
-        ],
-      ),
-    );
+            )
+          ],
+        ),
+      );
+    });
   }
 }
 
@@ -118,10 +120,7 @@ class GeneratorPage extends StatelessWidget {
                 onPressed: () {
                   appState.toggleLike();
                 },
-                icon: Icon(
-                  icon,
-                  size: 20,
-                ),
+                icon: Icon(icon, size: 20),
                 label: Text('Like'),
               ),
               SizedBox(width: 10),
@@ -140,10 +139,7 @@ class GeneratorPage extends StatelessWidget {
 }
 
 class WordCard extends StatelessWidget {
-  const WordCard({
-    super.key,
-    required this.pair,
-  });
+  const WordCard({super.key, required this.pair});
 
   final WordPair pair;
 
